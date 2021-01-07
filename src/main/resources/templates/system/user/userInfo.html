@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>企业资料</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" href="/resources/layui/css/layui.css" media="all" />
+    <link rel="stylesheet" href="/resources/css/public.css" media="all" />
+</head>
+<body class="childrenBody">
+<form class="layui-form layui-row" lay-filter="dataF" id="dataF">
+    <div class="layui-col-md3 layui-col-xs12 user_right">
+        <div class="layui-upload-list" id="headSet">
+            <input type="hidden" name="userPhoto" id="userPhoto">
+            <!--            /resources/images/face.jpg-->
+            <img class="layui-upload-img layui-circle userFaceBtn userAvatar" src="/resources/images/face.jpg" id="userFace">
+        </div>
+        <button id="uploadBtn" type="button" class="layui-btn layui-btn-primary userFaceBtn" ><i class="layui-icon">&#xe67c;</i><i th:text="#{userInfo.upload}"></i> </button>
+
+    </div>
+    <div class="layui-col-md6 layui-col-xs12">
+        <div class="layui-form-item">
+            <label class="layui-form-label" th:text="#{userInfo.name}">企业名称</label>
+            <div class="layui-input-block">
+                <input type="hidden" id="id" name="id" th:value="${session.user.id}" readonly="readonly" class="layui-input radius">
+                <input id="name" name="name"  class="layui-input layui-radius">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" th:text="#{userInfo.loginName}">登录名</label>
+            <div class="layui-input-block">
+                <input name="loginName"  readonly="readonly" class="layui-input layui-radius">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label" th:text="#{userInfo.address}">企业地址</label>
+            <div class="layui-input-block">
+                <input id="address" name="address"  class="layui-input layui-radius">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" th:text="#{userInfo.remark}">企业简介</label>
+            <div class="layui-input-block">
+                <textarea id="remark" name="remark"  th:text="${session.user.remark}" placeholder="请输入企业简介" class="layui-textarea userDesc"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit="" lay-filter="doSubmit"><span th:text="#{submit}">提交</span></button>
+                <button type="reset" class="layui-btn layui-btn-primary"><span th:text="#{reset}">重置</span></button>
+            </div>
+        </div>
+    </div>
+</form>
+<script type="text/javascript" src="/resources/layui/layui.js"></script>
+<script type="text/javascript" src="/resources/page/user/userInfo.js"></script>
+<script type="text/javascript" src="/resources/js/cacheUserInfo.js"></script>
+<script type="text/javascript">
+    layui.use(['jquery', 'form', 'layer', 'table','upload',], function () {
+        var $ = layui.jquery;
+        var form = layui.form;
+        var layer = layui.layer;
+        var table = layui.table;
+        var upload = layui.upload;
+
+        var uploadResult = document.getElementById("uploadResult");
+        var filePath;
+        loadData();
+
+        // $("#userFace").attr('src','/file/showImageByPath?path='+srcPath);
+        // $("#userPhoto").attr('src','/file/showImageByPath?path='+originPath);
+        upload.render({
+            elem: '#uploadBtn',
+            url: '/file/uploadFile',
+            acceptMime:'image/*',
+            field:'mf',
+            method : "post",
+            done: function(res, index, upload){
+                localStorage.setItem("time",new Date().getTime())
+                var path=res.path;
+                console.log(res)
+                $('#userFace').attr('src','/file/showImageByPath?path='+path);
+                // $('.thumbBox').css("background","#fff");
+                //给隐藏域赋值
+                $("#userPhoto").val(path);
+            }
+        });
+
+
+        function loadData(){
+            // $("#dataF").reset();
+            $.post("/user/loadUserById",$("#id"),function (res) {
+                form.val("dataF", res.data);
+
+                var originPath=res.data.userPhoto
+                console.log(originPath)
+                var srcPath = originPath.split("sys/")[1]
+                if(originPath!=null&&originPath!=""){
+                    $('#userFace').attr('src','/file/showImageByPath?path='+originPath);
+                }
+
+                localStorage.setItem("name",res.data.name)
+                localStorage.setItem("icon",res.data.userPhoto);
+            });
+        }
+
+        form.on("submit(doSubmit)",function (data) {
+            data.field.mf=filePath
+            localStorage.setItem("change","changed");
+            $.post("/user/updateUser",data.field,function (res) {
+
+                // setTimeout(function () {
+                //     $(".clildFrame .layui-tab-item.layui-show").find("iframe")[0].contentWindow.location.reload();
+                // },2000)
+
+            });
+
+            // setTimeout(window.location.reload(),3000);
+            console.log(data.field)
+            localStorage.setItem("time",new Date().getTime())
+        });
+    })
+</script>
+</body>
+</html>

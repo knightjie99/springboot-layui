@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wujie.springbootlayui.bus.mapper.GateAuthorMapper">
+
+    <resultMap type="com.wujie.springbootlayui.bus.entity.GateAuthor" id="authorMap" autoMapping="true">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="allSql">
+        id , gate_id ,staff_list, author_time, belong_id, create_time, update_time
+     </sql>
+
+    <select id="getGateAuthorById" resultMap="authorMap">
+        select
+        <include refid="allSql"></include>
+        from face_server.bus_gate_author
+        where id = #{id}
+    </select>
+
+    <select id="getAllGateIds" resultType="string">
+		select GROUP_CONCAT(gate_id) as ids
+		from face_server.bus_gate_author
+	</select>
+
+    <select id="getGateIdByStaffId" resultType="java.lang.Integer">
+         select gate_id from  face_server.bus_gate_author 
+         where find_in_set(#{staffId},staff_list)
+     </select>
+
+    <select id="getIdByGateId" resultType="java.lang.Integer">
+       select id from  face_server.bus_gate_author 
+       where gate_id = #{gateId}
+     </select>
+
+    <delete id="deleteGateAuthorByUid">
+        delete from bus_gate_author where belong_id = #{belongId}
+    </delete>
+
+</mapper>

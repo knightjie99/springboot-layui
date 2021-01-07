@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" style="height: 100%;height: 100%">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/layui/css/layui.css">
+    <title>Title</title>
+    <style>
+        #banner {
+            background: url("/resources/images/500.png") no-repeat;
+            background-size: 100%;
+            overflow: hidden;
+        }
+
+        h1 {
+            font-size: 40px;
+        }
+
+        .main {
+            height: 100%;
+            width: 100%;
+            background: url("/resources/images/bg.jpg") no-repeat;
+            background-size: 100%;
+            justify-items: center;
+            justify-content: center;
+            position: relative;
+            text-align:center;
+        }
+        .item{
+            margin: auto;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body style="height: 100%;height: 100%;justify-content: center">
+<!--<div class="layui-container" style="text-align: center;height: 500px;width: 600px;" id="banner">-->
+<!--&lt;!&ndash;</div>&ndash;&gt;style="text-align: center;margin-top: 20px;width: 100%;height: 100%"-->
+<div class="main" >
+    <br> <br> <br> <br> <br> <br> <br> <br> <br>
+    <h1 class="item" th:text="#{rs.h1}">注册完成</h1>
+    <h3 class="item" th:text="#{rs.h2}">恭喜您，注册成功！请等待审核......</h3>
+    <h3 class="item">
+        <div id="countdown"></div>
+    </h3>
+</div>
+
+<script language="javascript" type="text/javascript">
+    var time = 5;
+    var contain = document.getElementById("countdown");
+    contain.innerHTML = time.toString() + "[[#{rs.h3}]]";
+
+    function updateTime() {
+        time = time - 1
+        if (time >= 0) {
+            contain.innerHTML = time.toString() + "[[#{rs.h3}]]"
+        } else {
+            contain.innerHTML = "[[#{rs.h3}]]"
+        }
+    };
+    setInterval("updateTime()", 1000);
+    setTimeout("javascript:window.location.href=\"/sys/toLogin\";", time * 1000);
+</script>
+</body>
+
+</html>

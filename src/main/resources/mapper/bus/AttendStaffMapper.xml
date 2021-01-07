@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wujie.springbootlayui.bus.mapper.AttendStaffMapper">
+
+    <resultMap type="com.wujie.springbootlayui.bus.entity.AttendStaff" id="attendStaffMap" autoMapping="true">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="allSql">
+        id , rule_id ,staff_list, cycle_date, sign_time, 
+        leave_time, belong_id, create_time, update_time
+     </sql>
+
+    <select id="getRuleIdByStaffId" resultType="java.lang.Integer">
+         select rule_id from  face_server.bus_attend_staff 
+         where find_in_set(#{staffId},staff_list)
+     </select>
+
+    <select id="getAttendStaffByStaffId" resultMap="attendStaffMap">
+        select
+        <include refid="allSql"></include>
+        from face_server.bus_attend_staff
+        where find_in_set(#{staffId},staff_list)
+    </select>
+
+    <delete id="deleteStaffByUid">
+        delete from bus_staff where belong_id = #{belongId}
+    </delete>
+
+</mapper>

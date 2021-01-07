@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>Right</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta http-equiv="Access-Control-Allow-Origin" content="*">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="icon" href="/resources/favicon.ico">
+    <link rel="stylesheet" href="resources/layui/css/layui.css" th:href="@{/resources/layui/css/layui.css}" media="all"/>
+    <link rel="stylesheet" th:href="@{/resources/css/public.css}" media="all"/>
+    <link rel="stylesheet" th:href="@{/resources/layui_ext/dtree/dtree.css}" media="all"/>
+    <link rel="stylesheet" th:href="@{/resources/layui_ext/dtree/font/dtreefont.css}" media="all"/>
+    <style>
+        input#search_deptTree_select_input_id {
+            border-radius: 10px;
+            height: 30px;
+            margin-top: 4px;
+        }
+        input#deptTree_select_input_id {
+            border-radius: 10px;
+            height: 30px;
+            margin-top: 4px;
+        }
+        input#leaderdeptTree_select_input_id {
+            border-radius: 10px;
+            height: 30px;
+            margin-top: 4px;
+        }
+        input.layui-input.layui-unselect {
+            border-radius: 10px;
+            height: 30px;
+            margin-top: 4px;
+        }
+</style>
+</head>
+<body>
+<!--查询条件-->
+<fieldset class="layui-elem-field layui-field-title" style="margin-top: 15px;" hidden="hidden">
+<!--    <legend>搜索条件</legend>-->
+</fieldset>
+<form action="" method="post" id="searchFrm" lay-filter="searchFrm" class="layui-form" hidden="hidden">
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">升级包名称:</label>
+            <div class="layui-input-inline">
+                <input type="text" name="appName" id="appName" class="layui-input input-radius"
+                       placeholder="请输入升级包名称">
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block" style="text-align: center;padding-right: 15%;">
+            <button type="button" class="layui-btn layui-btn-sm layui-btn-radius" lay-submit="" lay-filter="doSearch"><i
+                    class="layui-icon layui-icon-search layui-icon-normal"></i>查询
+            </button>
+            <button type="reset" class="layui-btn layui-btn-sm layui-btn-radius layui-btn-warm"><i
+                    class="layui-icon layui-icon-refresh"></i><span>重置</span>
+            </button>
+        </div>
+    </div>
+</form>
+
+<!--数据表格-->
+<div>
+    <table class="layui-hide" id="appTable" lay-filter="appTable"></table>
+    <div id="appToolBar" style="display: none">
+        <button type="button" lay-event="add" class="layui-btn layui-btn-sm layui-btn-normal layui-btn-radius">
+            <i class="layui-icon layui-icon-add-1"></i><font th:text="#{add_one}"></font>
+        </button>
+    </div>
+    <div id="appRowBar" style="display: none;">
+        <button type="button"  lay-event="recover" class="layui-btn layui-btn-sm layui-btn-normal layui-btn-radius"><i
+                class="layui-icon layui-icon-edit"></i><font th:text="#{backup.restore}"></font>
+        </button>
+        <button type="button" lay-event="update" class="layui-btn layui-btn-sm layui-btn-radius"><i
+                class="layui-icon layui-icon-edit"></i><font th:text="#{form_edit}"></font>
+        </button>
+        <button type="button" lay-event="delete" class="layui-btn layui-btn-sm layui-btn-danger layui-btn-radius"><i
+                class="layui-icon layui-icon-delete"></i><font th:text="#{delete}"></font>
+        </button>
+    </div>
+</div>
+
+<!--添加和修改弹出层-->
+<div id="addOrUpdateDiv" style="display: none;padding: 10px;padding-right: 5%">
+    <form action="" method="post" class="layui-form" id="dataFrm" lay-filter="dataFrm">
+          <div class="layui-form-item">
+            <label class="layui-form-label layui-required " th:text="#{backup.backup_way}">备份方式:</label>
+              <div class="layui-input-inline">
+                  <input type="hidden" name="id">
+                  <select name="backupWay"  id="backupWay" lay-verify="required" lay-filter="backupWay">
+                      <option value="" th:text="#{backup.please_select}" >请选择</option>
+                      <option value="1" th:text="#{backup.manual}">手动</option>
+                      <option value="2" th:text="#{backup.auto}">自动</option>
+                  </select>
+              </div>
+          </div>
+
+        <div class="layui-form-item" id="freqForm" style="display: none">
+            <label class="layui-form-label layui-required"  th:text="#{backup.frequency}">备份频率:</label>
+            <div class="layui-input-inline">
+                <select name="frequency"   id="frequency" >
+                    <option value="" th:text="#{backup.please_select}">请选择</option>
+                    <option value="1" th:text="#{backup.week}">每周</option>
+                    <option value="2" th:text="#{backup.month}">每月</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label layui-required" th:text="#{backup.backup_content}">备份内容 :</label>
+            <input type="hidden" name="backupContent" class="layui-input" id="backupContent">
+            <div class="layui-input-block" id="countBox">
+                <input type="checkbox" name="cb" id="d1"  th:title="#{backup.d1}">
+                <input type="checkbox" name="cb" id="d2"  th:title="#{backup.d2}">
+                <input type="checkbox" name="cb" id="d3"  th:title="#{backup.d3}">
+            </div>
+        </div>
+
+
+
+        <div class="layui-form-item">
+            <div class="layui-input-block" style="text-align: center;padding-right: 7%">
+                <button type="button" class="layui-btn layui-btn-radius" lay-submit="" lay-filter="saveBtn" id="saveBtn"><i
+                        class="layui-icon layui-icon-search layui-icon-normal"></i><span th:text="#{submit}">提交</span>
+                </button>
+                <button type="reset" class="layui-btn layui-btn-radius layui-btn-warm"><i
+                        class="layui-icon layui-icon-refresh"></i><span th:text="#{reset}">重置</span>
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+<script type="text/javascript" src="/resources/layui/layui.js"></script>
+<script type="text/javascript" src="/resources/js/cache.js"></script>
+<script type="text/javascript">
+
+    //提升数据表格的作用域，因为底下还有一个reloadTable方法
+    var tableIns;
+    
+    layui.use(['jquery', 'form','element', 'layer', 'table','upload'], function () {
+        var $ = layui.jquery;
+        var form = layui.form;
+        var layer = layui.layer;
+        var table = layui.table;
+        var upload = layui.upload;
+        var element = layui.element;
+        //初始化表格 加载数据
+        tableIns = table.render({
+            elem: "#appTable",
+            title: "应用数据表格",
+            url: "/backup/loadAllBackup",
+            toolbar: "#appToolBar",
+            page: {layout: ["prev","page","next","limit"]},
+            height: "full-180",
+            cols: [ [
+                {type:'checkbox',width:50},
+                {field: 'id', title: 'ID', align: 'center',width:'50'},
+                {field: 'backupTime', title: '[[#{backup.backup_time}]]', align: 'center',width:'100'},
+                {field: 'backupWay', title: '[[#{backup.backup_way}]]', align: 'center',width:'120',templet:function (d) {
+                   return d.backupWay==1?"[[#{backup.manual}]]":"[[#{backup.auto}]]";
+                    }},
+                {field: 'backupContent', title: '[[#{backup.backup_content}]]', align: 'center', width: '120',templet:function (d) {
+                    var str="";
+                    var backupContent= d.backupContent
+                    if(backupContent.indexOf("1")>-1){
+                        str+="[[#{backup.d1}]]、"
+                    }
+                        if(backupContent.indexOf("2")>-1){
+                            str+="[[#{backup.d2}]]、"
+                        }
+                        if(backupContent.indexOf("3")>-1){
+                            str+="[[#{backup.d3}]]、"
+                        }
+
+                        if(str.endsWith("、")){
+                            str=str.substring(0,str.length-1)
+                        }
+                        return str
+                    }},
+                {field: 'status', title: '[[#{backup.status}]]', align: 'center',width:'100',templet:function (d) {
+                    return d.status==1?"[[#{backup.status.on}]]":"[[#{backup.status.off}]]";
+                }},
+                {field: 'createTime', title: '[[#{backup.create_time}]]', align: 'center',width:'180'},
+                {field: 'updateTime', title: '[[#{backup.update_time}]]', align: 'center',width:'180'},
+                {fixed: 'right', title: '[[#{operation}]]', toolbar: '#appRowBar', align: 'center',width:'380'}
+            ] ],
+            done: function (data, curr, count) {
+                localStorage.setItem("time",new Date().getTime())
+                //不是第一页时，如果当前返回的数据为0那么就返回上一页
+                if (data.data.length == 0 && curr != 1) {
+                    tableIns.reload({
+                        page: {
+                            curr: curr - 1
+                        }
+                    })
+                }
+            }
+        });
+
+
+
+
+        form.on('select(backupWay)', function (data) {
+            if(data.value=="2"){
+                $("#freqForm").show();
+            }else{
+
+                $("#freqForm").hide();
+                $("#frequency").val("");
+            }
+        })
+
+
+        //监控模糊查询按钮事件
+        form.on("submit(doSearch)", function (data) {
+            tableIns.reload({
+                where: data.field,
+                page: {
+                    curr: 1
+                }
+            });
+            return false;
+        });
+
+        //监控工具条事件
+        table.on("toolbar(appTable)", function (obj) {
+            switch (obj.event) {
+                case 'add':
+                    openAddLayer();
+                    break;
+            };
+        });
+
+        //监控行工具条事件
+        table.on("tool(appTable)", function (obj) {
+            //获取当前行数据
+            var data = obj.data;
+            switch (obj.event) {
+                case 'delete':
+                    deleteBackup(data);
+                    break;
+                case 'update':
+                    updateBackup(data);
+                    break;
+                case 'recover':
+                    recover(data);
+            };
+        });
+        var mainIndex;
+        var url;
+
+        //打开添加弹出层
+        function openAddLayer() {
+            mainIndex = layer.open({
+                type:1,
+                content:$("#addOrUpdateDiv"),
+                area:['700px','500px'],
+                title:'[[#{add_one}]]',
+                success:function () {
+                    $("#dataFrm")[0].reset();
+                    url="/backup/addBackup";
+                    $("#backupContent").val('')
+                    $("#frequency").val("");
+                    $("#freqForm").hide();
+                    //设置默认为无图片
+                }
+            });
+        }
+
+        //打开修改的弹出层
+        function updateBackup(data) {
+            mainIndex = layer.open({
+                type:1,
+                content:$("#addOrUpdateDiv"),
+                area:['700px','500px'],
+                title:'[[#{update}]]',
+                success:function () {
+                    //清空原有的数据
+                    $("#backupContent").val('')
+                    $("#dataFrm")[0].reset();
+                    //装载新的数据
+                    form.val("dataFrm",data);
+                    setCount(data.backupContent)
+                    if(data.backupWay==1){
+                        $("#frequency").val("");
+                        $("#freqForm").hide();
+                    }else{
+                        $("#frequency").val(data.frequency);
+                        $("#freqForm").show();
+                    }
+                    url="/backup/updateBackup";
+                }
+            });
+        }
+
+
+        
+      //提交按钮事件
+        form.on("submit(saveBtn)",function (data) {
+            console.log("submit")
+            if(data.field.backupContent==null||data.field.backupContent.length==0){
+                layer.msg("[[#{backup.msg_needOne}]]");
+                return false;
+            }
+            data.field.status=1;
+
+            $.post(url,data.field,function (res) {
+                localStorage.setItem("time",new Date().getTime())
+                if (res.code==200){
+                    tableIns.reload();
+                }
+                layer.msg(res.msg);
+                layer.close(mainIndex);
+            });
+            return false;
+        });
+
+        function countChecked() {
+            var str='';
+            if($("#d1").prop('checked')){
+                str+="1,"
+            }
+            if($("#d2").prop('checked')){
+                str+="2,"
+            }
+            if($("#d3").prop('checked')){
+                str+="3,"
+            }
+            if(str.endsWith(",")){
+                str= str.substring(0,str.length-1)
+            }
+            console.log("str "+str)
+            $("#backupContent").val(str)
+
+            return str;
+        }
+            $("#countBox").click(function () {
+                console.log("click")
+                countChecked()
+            })
+
+            function setCount(str) {
+                console.log("start counting "+str)
+
+                if(str.indexOf("1")>-1){
+                    $("#d1").prop('checked',true)
+                }
+                if(str.indexOf("2")>-1){
+                    $("#d2").prop('checked',true)
+                }
+                if(str.indexOf("3")>-1){
+                    $("#d3").prop('checked',true)
+                }
+
+            }
+
+        //删除
+        function deleteBackup(data) {
+            layer.confirm('[[#{delete_confirm}]]？', {btn: ['<span class=layui-icon>&#xe605;[[#{confirm}]]</span>','<span class=layui-icon>&#x1006;[[#{cancel}]]</span>']
+                ,icon: 3, title: '[[#{window_notice}]]'}, function (index) {
+                $.post("/backup/delete", {id: data.id},function (res) {
+                    localStorage.setItem("time",new Date().getTime())
+                    if (res.code == 200) {
+                        tableIns.reload();
+                    }
+                    layer.msg(res.msg);
+                });
+                layer.close(index);
+            });
+        };
+
+        function recover(data) {
+            layer.confirm('[[#{backup.msg_restoreConfirm1}]]', {btn: ['<span class=layui-icon>&#xe605;[[#{confirm}]]</span>','<span class=layui-icon>&#x1006;[[#{cancel}]]</span>']
+                ,icon: 3, title: '[[#{window_notice}]]'}, function (index) {
+                $.post("/backup/recover", {id: data.id},function (res) {
+                    localStorage.setItem("time",new Date().getTime())
+                    if (res.code == 200) {
+                        tableIns.reload();
+                    }
+                    layer.msg(res.msg);
+                });
+                layer.close(index);
+            });
+        };
+
+
+    });
+</script>
+</body>
+</html>

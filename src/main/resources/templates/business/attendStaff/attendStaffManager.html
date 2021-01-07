@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>Right</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta http-equiv="Access-Control-Allow-Origin" content="*">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="icon" href="/resources/favicon.ico">
+    <link rel="stylesheet" href="resources/layui/css/layui.css" th:href="@{/resources/layui/css/layui.css}" media="all"/>
+    <link rel="stylesheet" th:href="@{/resources/css/public.css}" media="all"/>
+    <link rel="stylesheet" th:href="@{/resources/layui_ext/dtree/dtree.css}" media="all"/>
+    <link rel="stylesheet" th:href="@{/resources/layui_ext/dtree/font/dtreefont.css}" media="all"/>
+    <style>
+        input#search_provideridTree_select_input_id {
+            border-radius: 10px;
+            height: 30px;
+            margin-top: 4px;
+        }
+        input#provideridTree_select_input_id {
+            border-radius: 10px;
+            height: 30px;
+            margin-top: 4px;
+        }
+        input#leaderprovideridTree_select_input_id {
+            border-radius: 10px;
+            height: 30px;
+            margin-top: 4px;
+        }
+        input.layui-input.layui-unselect {
+            border-radius: 10px;
+            height: 30px;
+            margin-top: 4px;
+        }
+        input#search_goodsidTree_select_input_id {
+            border-radius: 10px;
+            height: 30px;
+            margin-top: 4px;
+        }
+        input#goodsidTree_select_input_id {
+            border-radius: 10px;
+            height: 30px;
+            margin-top: 4px;
+        }
+        input#leadergoodsidTree_select_input_id {
+            border-radius: 10px;
+            height: 30px;
+            margin-top: 4px;
+        }
+        input.layui-input.layui-unselect {
+            border-radius: 10px;
+            height: 30px;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body>
+
+
+<!--数据表格-->
+<div>
+    <table class="layui-hide" id="attendStaffTable" lay-filter="attendStaffTable"></table>
+    <div id="attendStaffToolBar" style="display: none">
+        <button type="button" lay-event="add" class="layui-btn layui-btn-sm layui-btn-normal layui-btn-radius">
+            <i class="layui-icon layui-icon-add-1"></i><font th:text="#{add_one}"></font>
+        </button>
+    </div>
+    <div id="attendStaffRowBar" style="display: none;">
+        <button type="button" lay-event="update" class="layui-btn layui-btn-sm layui-btn-radius"><i
+                class="layui-icon layui-icon-edit"></i><font th:text="#{batch_add}"></font>
+        </button>
+        <button type="button" lay-event="delete" class="layui-btn layui-btn-sm layui-btn-danger layui-btn-radius"><i
+                class="layui-icon layui-icon-delete"></i><font th:text="#{batch_delete}"></font>
+        </button>
+    </div>
+</div>
+
+<!--添加和修改弹出层-->
+<div id="addOrUpdateDiv" style="display: none;padding: 10px;padding-right: 5%">
+    <form action="" method="post" class="layui-form" id="dataFrm" lay-filter="dataFrm">
+        
+        <div class="layui-form-item" id="selectbox">
+            <label class="layui-form-label" th:text="#{as.rule_name}">规则名称:</label>
+            <div class="layui-input-inline">
+                <input type="hidden" name="id">
+                <select name="ruleId" id="select_ruleId">
+                    <option value=" " th:text="#{as.select_rule}">请选择规则:</option>
+                </select>
+            </div>
+
+
+        </div>
+
+        <div class="layui-form-item" id="displaybox">
+            <label class="layui-form-label" th:text="#{as.select_rule}">考勤规则</label>
+            <div class="layui-input-block">
+                <input  id="display_ruleId" readonly="readonly"  class="layui-input input-radius">
+            </div>
+        </div>
+
+
+
+        <div class="layui-form-item">
+            <label class="layui-form-label" th:text="#{as.select_staff}">选择人员:</label>
+            <div class="layui-input-block">
+                <input type="hidden" name="staffList" id="deptId">
+                <input   class="layui-input" id="nameInput"  readonly="readonly">
+                <ul id="deptTree" hidden="hidden" class="dtree" data-id="0"></ul>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label layui-required" th:text="#{as.select_date}">选择日期</label>
+            <input type="hidden" name="cycleDate" class="layui-input" id="cycleDate">
+            <div class="layui-input-block" id="dayBox">
+                <input type="checkbox" name="cb" id="d1"  th:title="#{w1}">
+                <input type="checkbox" name="cb" id="d2"  th:title="#{w2}">
+                <input type="checkbox" name="cb" id="d3"  th:title="#{w3}">
+                <input type="checkbox" name="cb" id="d4"  th:title="#{w4}">
+                <input type="checkbox" name="cb" id="d5"  th:title="#{w5}">
+                <input type="checkbox" name="cb" id="d6"  th:title="#{w6}">
+                <input type="checkbox" name="cb" id="d7"  th:title="#{w7}">
+            </div>
+        </div>
+
+
+ 
+       <div class="layui-form-item">
+            <div class="layui-input-block" style="text-align: center;padding-right: 7%">
+                <button type="button" class="layui-btn layui-btn-radius" lay-submit="" lay-filter="doSubmit" id="doSubmit"><i
+                        class="layui-icon layui-icon-search layui-icon-normal"></i><span th:text="#{submit}">提交</span>
+                </button>
+                <button type="reset" class="layui-btn layui-btn-radius layui-btn-warm"><i
+                        class="layui-icon layui-icon-refresh"></i><span th:text="#{reset}">重置</span>
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+<script type="text/javascript" src="/resources/layui/layui.js"></script>
+
+<script type="text/javascript">
+
+    //提升数据表格的作用域，因为底下还有一个reloadTable方法
+    var tableIns;
+
+    layui.extend({
+        dtree: '/resources/layui_ext/dtree/dtree'
+    }).use(['jquery', 'form', 'layer', 'table', 'laydate','dtree'], function () {
+        var $ = layui.jquery;
+        var form = layui.form;
+        var layer = layui.layer;
+        var table = layui.table;
+        var laydate = layui.laydate;
+        var dtree = layui.dtree;
+        var bas=',';
+        var hidden=1
+
+        //初始化时间选择器
+        laydate.render({
+              elem: '#signTime',
+              type: 'time',
+              type: 'time',
+              format: 'H点m分'
+         });
+        laydate.render({
+            elem: '#leaveTime',
+            type: 'time',
+            format: 'H点m分'
+        });
+        laydate.render({
+            elem: '#startSign',
+            type: 'time',
+            format: 'H点m分'
+        });
+        laydate.render({
+            elem: '#endSign',
+            type: 'time',
+            format: 'H点m分'
+        });
+        laydate.render({
+            elem: '#startLeave',
+            type: 'time',
+            format: 'H点m分'
+       });
+        
+        laydate.render({
+            elem: '#endLeave',
+            type: 'time',
+            format: 'H点m分'
+       });
+
+        //初始化表格 加载数据
+        tableIns = table.render({
+            elem: "#attendStaffTable",
+            title: "进货数据表格",
+            url: "/attendStaff/loadAllAttendStaff",
+            toolbar: "#attendStaffToolBar",
+            page: {layout: ["prev","page","next","limit"]},
+            height: "full-180",
+            cols: [ [
+                {field: 'id', title: 'ID', align: 'center',width:'50',templet:function (d){
+                        bas+=d.ruleId+','
+                        console.log(d.ruleId)
+                        return d.id
+                    }},
+                {field: 'ruleName', title: '[[#{as.rule_name}]]', align: 'center',width:'200'},
+                {field: 'nameList', title: '[[#{as.name_list}]]', align: 'center',width:'100'},
+                {field: 'cycleDate', title: '[[#{as.cycle_date}]]', align: 'center',width:'250',templet:function (d) {
+                        var cycle=d.cycleDate;
+                        var strs = '';
+                        if(cycle.indexOf("1")!=-1){
+                            strs+="[[#{w1}]],"
+                        }
+                        if(cycle.indexOf("2")!=-1){
+                            strs+="[[#{w2}]],"
+                        }
+                        if(cycle.indexOf("3")!=-1){
+                            strs+="[[#{w3}]],"
+                        }
+                        if(cycle.indexOf("4")!=-1){
+                            strs+="[[#{w4}]],"
+                        }
+                        if(cycle.indexOf("5")!=-1){
+                            strs+="[[#{w5}]],"
+                        }
+                        if(cycle.indexOf("6")!=-1){
+                            strs+="[[#{w6}]],"
+                        }
+                        if(cycle.indexOf("7")!=-1){
+                            strs+="[[#{w7}]],"
+                        }
+                        if( strs.endsWith(',')){
+                            strs=strs.substr(0,strs.length-1);
+                        }
+
+                        return strs;
+                    }},
+                {field: 'signTime', title: '[[#{as.sign_time}]]', align: 'center',width:'150'},
+                {field: 'leaveTime', title: '[[#{as.leave_time}]]', align: 'center',width:'90'},
+                {fixed: 'right', title: '[[#{operation}]]', toolbar: '#attendStaffRowBar', align: 'center',width:'260'}
+            ] ],
+            done: function (data, curr, count) {
+                localStorage.setItem("time",new Date().getTime())
+                //不是第一页时，如果当前返回的数据为0那么就返回上一页
+                if (data.data.length == 0 && curr != 1) {
+                    tableIns.reload({
+                        page: {
+                            curr: curr - 1
+                        }
+                    })
+                }
+                //当是第一页时，如果当前返回的数据为0并且当前为第一页  给一个空的查询条件，并给curr赋初值为1
+                //if (data.data.length==0 && curr==1){
+//                    tableIns.reload({
+//                        where: "",
+//                        page:{
+//                            curr:1
+//                        }
+//                    })
+//                }
+
+                countOption()
+            }
+        });
+
+
+
+        $("#dayBox").click(function () {
+            countCycle()
+        })
+
+        function setCycle(str) {
+            console.log("start counting "+str)
+
+            if(str.indexOf("1")>-1){
+                $("#d1").prop('checked',true)
+            }
+            if(str.indexOf("2")>-1){
+                $("#d2").prop('checked',true)
+            }
+            if(str.indexOf("3")>-1){
+                $("#d3").prop('checked',true)
+            }
+            if(str.indexOf("4")>-1){
+                $("#d4").prop('checked',true)
+            }
+            if(str.indexOf("5")>-1){
+                $("#d5").prop('checked',true)
+            }
+            if(str.indexOf("6")>-1){
+                $("#d6").prop('checked',true)
+            }
+            if(str.indexOf("7")>-1){
+                $("#d7").prop('checked',true)
+            }
+        }
+
+        function countCycle() {
+            var str='';
+            if($("#d1").prop('checked')){
+                str+="1,"
+            }
+            if($("#d2").prop('checked')){
+                str+="2,"
+            }
+            if($("#d3").prop('checked')){
+                str+="3,"
+            }
+            if($("#d4").prop('checked')){
+                str+="4,"
+            }
+            if($("#d5").prop('checked')){
+                str+="5,"
+            }
+            if($("#d6").prop('checked')){
+                str+="6,"
+            }
+            if($("#d7").prop('checked')){
+                str+="7,"
+            }
+            console.log("cycle: "+str )
+            $("#cycleDate").val(str)
+            return str;
+
+        }
+
+        function setView(){
+            var permissionData = dtree.getCheckbarNodesParam("deptTree");
+            console.log(permissionData);
+            var str = ''
+            var idList= ''
+
+            $.each(permissionData, function (index, item) {
+                if(item.nodeId.length>5){
+                    str+=item.context+","
+                    idList+=(item.nodeId.substring(5))+","
+                }
+
+            })
+            console.log(str)
+            console.log(idList)
+            $("#deptId").val(idList)
+            $("#nameInput").val(str)
+        }
+
+        $("#nameInput").click(function () {
+            console.log("nameInput click")
+            if(hidden==1){
+                $("#deptTree").removeAttr("hidden")
+                hidden=0
+            }else{
+                $("#deptTree").attr("hidden","hidden")
+                hidden=1
+            }
+        })
+
+            function countOption() {
+
+                setTimeout(function () {
+                    $.get("/attendRule/loadAllAttendRule", function (res) {
+                        var data = res.data;
+                        var dom = $("#select_ruleId");
+                        var html = '<option value=" ">[[#{as.select_rule}]]</option>';
+                        $.each(data, function (index, item) {
+                            console.log("option")
+                            console.log(bas)
+                            if(bas.indexOf(","+item.id+",")==-1) {
+                                console.log(item.id)
+                                html += '<option value="' + item.id + '">' + item.ruleName + '</option>';
+                            }
+                        })
+                        dom.html(html);
+                        //重新渲染下拉列表
+                        form.render("select");
+                    });
+                },1000)
+            }
+        var deptTre
+        function renderTree(){
+             deptTree = dtree.render({
+                elem: "#deptTree",
+                checkbar: true,
+                id: "treeParam",
+                checkbarFun:{
+                    chooseBefore: function($i, node){	// 复选框点击前回调
+                        return true;
+                    },
+                    chooseDone: function(checkbarNodesParam) {	//复选框点击事件完毕后，返回该树关于复选框操作的全部信息，用于用户自定义，如未指定则树只是页面上做了修改
+                        setView()
+                    }
+                },
+                toolbarFun:{
+
+                },
+                checkbarType: "all",
+                width: "100%", // 可以在这里指定树的宽度来填满div
+                dataStyle: "layuiStyle", //使用layui风格的数据格式
+                dataFormat: "list",     //配置data的风格为list
+                response: {message: "msg", statusCode: 0},  //修改response中返回数据的定义
+                url: "/dept/loadAttendUnscheduled" // 使用url加载（可与data加载同时存在）
+            });
+        }
+
+        //监控模糊查询按钮事件
+        form.on("submit(doSearch)", function (data) {
+            tableIns.reload({
+                where: data.field,
+                page: {
+                    curr: 1
+                }
+            });
+            return false;
+        });
+
+
+
+        //监控工具条事件
+        table.on("toolbar(attendStaffTable)", function (obj) {
+            switch (obj.event) {
+                case 'add':
+                    $("#selectbox").removeAttr("hidden")
+                    $("#displaybox").attr("hidden","hidden")
+                    openAddLayer();
+                    break;
+            };
+        });
+
+        //监控行工具条事件
+        table.on("tool(attendStaffTable)", function (obj) {
+            //获取当前行数据
+            var data = obj.data;
+            switch (obj.event) {
+                case 'delete':
+
+                    deleteAttendStaff(data);
+
+                    break;
+                case 'update':
+
+
+                    updateAttendStaff(data);
+                    break;
+            };
+        });
+
+
+        var mainIndex;
+        var url;
+
+        //打开添加弹出层
+        function openAddLayer() {
+            renderTree()
+            mainIndex = layer.open({
+                type:1,
+                content:$("#addOrUpdateDiv"),
+                area:['700px','500px'],
+                title:'[[#{add_one}]]',
+                success:function () {
+                    $("#dataFrm")[0].reset();
+                    url="/attendStaff/addAttendStaff";
+
+                }
+            });
+        };
+
+        //打开修改的弹出层
+        function updateAttendStaff(data) {
+            mainIndex = layer.open({
+                type:1,
+                content:$("#addOrUpdateDiv"),
+                area:['700px','500px'],
+                title:'[[#{update}]]',
+                success:function () {
+                    //清空原有的数据
+                    $("#dataFrm")[0].reset();
+                    $("#display_ruleId").val(data.ruleName)
+
+                    dtree.render({
+                        elem: "#deptTree",
+                        checkbar: true,
+                        id: "treeParam",
+                        checkbarFun:{
+                            chooseBefore: function($i, node){	// 复选框点击前回调
+                                return true;
+                            },
+                            chooseDone: function(checkbarNodesParam) {	//复选框点击事件完毕后，返回该树关于复选框操作的全部信息，用于用户自定义，如未指定则树只是页面上做了修改
+                                setView()
+                            }
+                        },
+                        toolbarFun:{
+
+                        },
+                        checkbarType: "all",
+                        width: "100%", // 可以在这里指定树的宽度来填满div
+                        dataStyle: "layuiStyle", //使用layui风格的数据格式
+                        dataFormat: "list",     //配置data的风格为list
+                        response: {message: "msg", statusCode: 0},  //修改response中返回数据的定义
+                        url: "/dept/loadAttendUnscheduled?asId="+data.id // 使用url加载（可与data加载同时存在）
+                    });
+
+
+
+
+
+
+                    //装载新的数据
+                    form.val("dataFrm",data);
+                    url="/attendStaff/updateAttendStaff";
+
+                    setCycle(data.cycleDate)
+                    $("#nameInput").val(data.nameList)
+
+                    $("#displaybox").removeAttr("hidden")
+                    $("#selectbox").attr("hidden","hidden")
+                }
+            });
+        };
+
+        
+
+        form.on("submit(doSubmit)",function (data) {
+            console.log(data)
+
+            if(url=="/attendStaff/addAttendStaff"){
+                if(data.field.ruleId==" "||data.field.ruleId==null){
+                    layer.msg("[[#{as.msg_needRule}]]");
+                    return false
+                }
+
+            }
+
+            if(data.field.staffList==""||data.field.staffList==null){
+                layer.msg("[[#{as.msg_needStaff}]]");
+                return false
+
+            }
+            if(data.field.cycleDate==""||data.field.cycleDate==null){
+                layer.msg("[[#{as.msg_needDay}]]");
+                return false
+            }
+
+            $.post(url,data.field,function (res) {
+                localStorage.setItem("time",new Date().getTime())
+                if (res.code==200){
+                    tableIns.reload();
+                }
+                layer.msg(res.msg);
+                layer.close(mainIndex);
+                bas=','
+                tableIns.reload();
+            });
+            return false;
+        });
+
+
+        //删除
+        function deleteAttendStaff(data) {
+            layer.confirm('[[#{delete_confirm}]]' + data.ruleName + '？', {btn: ['<span class=layui-icon>&#xe605;[[#{confirm}]]</span>','<span class=layui-icon>&#x1006;[[#{cancel}]]</span>']
+                ,icon: 3, title: '[[#{window_notice}]]'}, function (index) {
+                $.post("/attendStaff/deleteAttendStaff", {id: data.id},function (res) {
+                    localStorage.setItem("time",new Date().getTime())
+                    if (res.code == 200) {
+                        bas=','
+                        tableIns.reload();
+                    }
+                    layer.msg(res.msg);
+
+                });
+                layer.close(index);
+            });
+
+
+        }
+
+    });
+
+</script>
+
+</body>
+</html>

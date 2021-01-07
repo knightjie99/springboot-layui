@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>首页--工作台</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" href="/resources/layui/css/layui.css" media="all"/>
+    <link rel="stylesheet" href="/resources/css/public.css" media="all"/>
+</head>
+<style>
+    .layui-card {
+        border: 1px solid #f2f2f2;
+        border-radius: 5px;
+        height: 230px
+    }
+
+    .icon {
+        margin-right: 10px;
+        color: #1aa094;
+    }
+
+    .icon-cray {
+        color: #ffb800 !important;
+    }
+
+    .icon-blue {
+        color: #1e9fff !important;
+    }
+
+    .icon-tip {
+        color: #ff5722 !important;
+    }
+
+    .layuimini-qiuck-module {
+        text-align: center;
+        margin-top: 10px
+    }
+
+    .layuimini-qiuck-module a i {
+        display: inline-block;
+        width: 100%;
+        height: 60px;
+        line-height: 60px;
+        text-align: center;
+        border-radius: 2px;
+        font-size: 30px;
+        background-color: #F8F8F8;
+        color: #333;
+        transition: all .3s;
+        -webkit-transition: all .3s;
+    }
+
+    .layuimini-qiuck-module a cite {
+        position: relative;
+        top: 2px;
+        display: block;
+        color: #666;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+        font-size: 14px;
+    }
+
+    .welcome-module {
+        width: 100%;
+        height: 210px;
+    }
+
+    .panel {
+        background-color: #fff;
+        border: 1px solid transparent;
+        border-radius: 3px;
+        -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
+        box-shadow: 0 1px 1px rgba(0, 0, 0, .05)
+    }
+
+    .panel-body {
+        padding: 10px
+    }
+
+    .panel-title {
+        margin-top: 0;
+        margin-bottom: 0;
+        font-size: 12px;
+        color: inherit
+    }
+
+    .label {
+        display: inline;
+        padding: .2em .6em .3em;
+        font-size: 75%;
+        font-weight: 700;
+        line-height: 1;
+        color: #fff;
+        text-align: left;
+        white-space: nowrap;
+        vertical-align: baseline;
+        border-radius: .25em;
+        margin-top: .3em;
+    }
+
+    .layui-red {
+        color: red
+    }
+
+    .main_btn > p {
+        height: 40px;
+    }
+
+    .layui-bg-number {
+        background-color: #F8F8F8;
+        height: 135px
+    }
+
+    .layuimini-notice:hover {
+        background: #f6f6f6;
+    }
+
+    .layuimini-notice {
+        padding: 7px 16px;
+        clear: both;
+        font-size: 12px !important;
+        cursor: pointer;
+        position: relative;
+        transition: background 0.2s ease-in-out;
+    }
+
+    .layuimini-notice-title, .layuimini-notice-label {
+        padding-right: 70px !important;
+        text-overflow: ellipsis !important;
+        overflow: hidden !important;
+        white-space: nowrap !important;
+    }
+
+    .layuimini-notice-title {
+        line-height: 28px;
+        font-size: 14px;
+    }
+
+    .layuimini-notice-extra {
+        position: absolute;
+        top: 50%;
+        margin-top: -8px;
+        right: 16px;
+        display: inline-block;
+        height: 16px;
+        color: #999;
+    }
+
+
+    .layui-col-xs6 {
+        width: 50%;
+        /*font-size: 20px;*/
+        /*font-weight: bold;*/
+        padding-top: 2px;
+        padding-bottom: 4px;
+    }
+
+    .layui-col-xs12 {
+        width: 100%;
+        font-size: 15px;
+        font-weight: bold;
+    }
+
+    .layui-col-space10 {
+        margin: -1px;
+    }
+
+    .layui-col-xs4 {
+        width: 33.33333333%;
+        padding-inline: 5px;
+    }
+
+
+</style>
+<body class="childrenBody">
+<blockquote class="layui-elem-quote layui-bg-green">
+    <div id="nowTime"></div>
+</blockquote>
+
+<div class="layui-col-md12">
+    <div class="layui-card">
+        <div class="layui-card-header"><i class="fa fa-warning icon" th:text="#{desk.today}"></i></div>
+        <div class="layui-card-body">
+            <div class="welcome-module">
+                <div class="layui-row layui-col-space10">
+                    <div class="layui-col-xs4">
+                        <div class="panel layui-bg-number">
+                            <div class="panel-body">
+                                <div class="panel-title">
+                                    <span class="label pull-left layui-bg-green" th:text="#{desk.device}">设备</span>
+                                </div>
+                                <div class="layui-col-xs12" style="font-size: 20px" th:text="#{desk.gatesTotal}">闸机总数
+                                    <h1 style="margin: 10px;color: #00d20d" id="gate"></h1>
+                                </div>
+                                <div class="layui-col-xs6" style="color:red" id="on" th:text="#{desk.online}">在线闸机
+                                </div>
+                                <div class="layui-col-xs6" style="color: green" id="off" th:text="#{desk.offline}">离线闸机
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="layui-col-xs4">
+                        <div class="panel layui-bg-number">
+                            <div class="panel-body">
+                                <div class="panel-title">
+                                    <span class="label pull-left layui-bg-orange" th:text="#{desk.attend}">考勤</span>
+                                </div>
+                                <div class="layui-col-xs12" style="font-size: 20px" th:text="#{desk.attendTotal}">考勤总数
+                                    <h1 id="attend" style="margin: 10px;color: #1aa094"></h1>
+                                </div>
+                                <div class="layui-col-xs6" style="color: red" id="late" th:text="#{desk.late}">迟到
+                                </div>
+                                <div class="layui-col-xs6" style="color:green" id="early" th:text="#{desk.early}">早退
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="layui-col-xs4">
+                        <div class="panel layui-bg-number">
+                            <div class="panel-body">
+                                <div class="panel-title">
+                                    <span class="label pull-left layui-bg-blue" th:text="#{desk.faceRecord}">刷脸</span>
+                                </div>
+                                <div class="layui-col-xs12" style="font-size: 20px" th:text="#{desk.faceTotal}">刷脸记录
+                                    <h1 id="record" style="margin: 10px;color: #b563ed"></h1>
+                                </div>
+                                <div class="layui-col-xs6" style="color: red" id="hot" th:text="#{desk.hot}">体温异常
+                                </div>
+                                <div class="layui-col-xs6" style="color:green" id="visitor" th:text="#{desk.visitor}">访客
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="layui-col-md12" style="width:70%">
+    <div style="width:100%;padding-top: 0;display: flex;justify-content: space-between" id="filterBar">
+<!--        <font style="width: 20%" th:text="#{desk.amount}">通行流量 </font>-->
+        <div>
+            <font th:text="#{desk.select}">选择设备</font>
+            <select id="gate_select">
+
+            </select>
+        </div>
+
+        <div style="padding-right: 0">
+            <button id="b1" class="layui-btn" style="background: #009688">1</button>
+            <button id="b2" class="layui-btn" style="background: grey">7</button>
+            <button id="b3" class="layui-btn" style="background: grey">30</button>
+        </div>
+
+
+
+    </div>
+    <div style="display: flex;white-space: nowrap;width: 100%;height: 300px">
+        <div id="chart4" style="width: 100%;height: 100%"></div>
+    </div>
+
+</div>
+
+<div class="layui-col-md12"  style="width:30%;height: 300px;border:1px solid rgba(57,57,57,0.34);border-radius: 5px;padding-inline: 10px" >
+    <div style="width: 100%;display: flex;justify-content: space-around">
+        <input type="text" name="startTime" id="startTime" readonly="readonly" placeholder="yyyy-MM-dd"
+               class="layui-input input-radius" style="width: 30%">---
+        <input type="text" name="endTime" id="endTime" readonly="readonly" placeholder="yyyy-MM-dd"
+               class="layui-input input-radius" style="width: 30%">
+<!--        <input type="date" lang="en">至<input type="date">-->
+    </div><br>
+    <font style="padding-top: 10px" th:text="#{desk.passRank}">设备通行排行</font><br>
+    <div style="width: 100%;padding-top: 20px" id="rank"></div>
+
+</div>
+
+<div class="layui-col-md12" style="width: 80%">
+    <div class="layui-card">
+        <div class="layui-card-header"></div>
+        <div style="display: flex;white-space: nowrap;width: 100%;height: 300px">
+            <div id="chart1" style="width: 100%;height: 100%"></div>
+        </div>
+        <div style="display: flex;white-space: nowrap;width: 100%;height: 300px">
+            <div id="chart2" style="width: 100%;height: 100%"></div>
+        </div>
+        <div style="display: flex;white-space: nowrap;width: 100%;height: 300px">
+            <div id="chart3" style="width: 100%;height: 100%"></div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="/resources/layui/layui.js"></script>
+
+<script type="text/javascript">
+    //获取当前登陆人
+    var currentUserName = '[[${session.user.name}]]';
+
+    //获取系统时间
+    var newDate = '';
+    getLangDate();
+
+    //值小于10时，在前面补0
+    function dateFilter(date) {
+        if (date < 10) {
+            return "0" + date;
+        }
+        return date;
+    }
+
+    function getLangDate() {
+        var dateObj = new Date(); //表示当前系统时间的Date对象
+        var year = dateObj.getFullYear(); //当前系统时间的完整年份值
+        var month = dateObj.getMonth() + 1; //当前系统时间的月份值
+        var date = dateObj.getDate(); //当前系统时间的月份中的日
+        var day = dateObj.getDay(); //当前系统时间中的星期值
+        var weeks = ["[[#{w7}]]", "[[#{w1}]]", "[[#{w2}]]", "[[#{w3}]]", "[[#{w4}]]", "[[#{w5}]]", "[[#{w6}]]"];
+        var week = weeks[day]; //根据星期值，从数组中获取对应的星期字符串
+        var hour = dateObj.getHours(); //当前系统时间的小时值
+        var minute = dateObj.getMinutes(); //当前系统时间的分钟值
+        var second = dateObj.getSeconds(); //当前系统时间的秒钟值
+        var timeValue = "" + ((hour >= 12) ? (hour >= 18) ? " [[#{night}]]" : " [[#{afternoon}]]" : " [[#{morning}]]"); //当前时间属于上午、晚上还是下午
+        newDate = dateFilter(year) + "." + dateFilter(month) + "." + dateFilter(date) + "  " + " " + dateFilter(hour) + ":" + dateFilter(minute) + ":" + dateFilter(second);
+        document.getElementById("nowTime").innerHTML = "[[#{dear}]] " + currentUserName + ", " + timeValue + " [[#{welcome_1}]] " + newDate + "　" + week;
+        setTimeout("getLangDate()", 1000);
+    }
+
+    layui.config({
+        base: "\\resources\\layui\\lay\\modules\\"
+    }).use(['form', 'element', 'layer', 'jquery', 'echarts',"laydate", 'miniTab'], function () {
+        var form = layui.form,
+            layer = parent.layer === undefined ? layui.layer : top.layer,
+            element = layui.element,
+            miniTab = layui.miniTab,
+            echarts = layui.echarts,
+            laydate=layui.laydate,
+            $ = layui.jquery;
+
+        miniTab.listen();
+
+        var start=null
+        var end=null
+        laydate.render({
+            elem: '#startTime',
+            trigger:"click",
+            done: function(value, date){
+                start=value
+                recordRank()
+            },
+            lang:"[[#{desk.lang}]]"
+        });
+        laydate.render({
+            elem: '#endTime',
+            trigger:"click",
+            done: function(value, date){
+                end=value
+            recordRank()
+            },
+            lang:"[[#{desk.lang}]]"
+        });
+
+
+        //上次登录时间【此处应该从接口获取，实际使用中请自行更换】
+        $(".loginTime").html(newDate.split("日")[0] + "日</br>" + newDate.split("日")[1]);
+        //icon动画
+        $(".panel a").hover(function () {
+            $(this).find(".layui-anim").addClass("layui-anim-scaleSpring");
+        }, function () {
+            $(this).find(".layui-anim").removeClass("layui-anim-scaleSpring");
+        })
+        $(".panel a").click(function () {
+            parent.addTab($(this));
+        });
+
+        var desk = new Object();
+        var d1 = new Array();
+        var d2 = new Array();
+        var d3 = new Array();
+        var d4 = new Array();
+
+        var e1 = [];
+        var e2 = [];
+        var e3 = [];
+
+        var myDate = new Date(); //获取今天日期
+        myDate.setDate(myDate.getDate() - 6);
+        var dateArray = [];
+        var dateTemp;
+        var flag = 1;
+        for (var i = 0; i < 7; i++) {
+            dateTemp = (myDate.getMonth() + 1) + "-" + myDate.getDate();
+            dateArray.push(dateTemp);
+            myDate.setDate(myDate.getDate() + flag);
+        }
+        $.post("/login/getDeskData", null, function (res) {
+            console.log(res)
+
+            desk = res;
+            $("#attend").text(res.attends[6])
+            $("#late").text("[[#{desk.late}]]:" + res.lateSum[6])
+            $("#early").text("[[#{desk.early}]]:" + res.earlySum[6])
+            d1 = res.attends;
+            d2 = res.lateSum;
+            d3 = res.earlySum;
+            d4 = res.noClock;
+
+            e1 = res.records;
+            e2 = res.highTemp;
+            e3 = res.visitor;
+
+            $("#gate").text(res.gates)
+            $("#on").text("[[#{desk.online}]]:" + res.onGate)
+            $("#off").text("[[#{desk.offline}]]:" + res.offGate)
+
+            $("#record").text(res.records[6])
+            $("#hot").text("[[#{desk.hot}]]:" + res.highTemp[6])
+            $("#visitor").text("[[#{desk.visitor}]]:" + res.visitor[6])
+
+
+            var chart1 = echarts.init(document.getElementById("chart1"));
+            console.log(d1)
+
+            var optionchart = {
+                title: {
+                    text: '[[#{desk.attend}]]'
+                },
+                tooltip: {},
+                legend: {
+                    data: ['[[#{desk.attendTotal}]]', '[[#{desk.late}]]', '[[#{desk.early}]]', '[[#{desk.noClock}]]']
+                },
+                xAxis: {
+                    data: dateArray
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                series: [{
+                    name: '[[#{desk.attendTotal}]]',
+                    type: 'bar', //柱状
+                    data: d1,
+                    itemStyle: {
+                        normal: { //柱子颜色
+                            color: '#ff6600'
+                        }
+                    },
+                }, {
+                    name: '[[#{desk.late}]]',
+                    type: 'bar',
+                    data: d2,
+                    itemStyle: {
+                        normal: {
+                            color: '#33ffcc'
+                        }
+                    }
+                },
+                    {
+                        name: '[[#{desk.early}]]',
+                        type: 'bar',
+                        data: d3,
+                        itemStyle: {
+                            normal: {
+                                color: '#66ff00'
+                            }
+                        }
+                    },
+                    {
+                        name: '[[#{desk.noClock}]]',
+                        type: 'bar',
+                        data: d4,
+                        itemStyle: {
+                            normal: {
+                                color: '#a7a7a7'
+                            }
+                        }
+                    }]
+            };
+
+            var optionchart2 = {
+                title: {
+                    text: '[[#{desk.faceRecord}]]'
+                },
+                tooltip: {},
+                legend: {
+                    data: ['[[#{desk.faceRecord}]]', '[[#{desk.visitor}]]', '[[#{desk.hot}]]']
+                },
+                xAxis: {
+                    data: dateArray
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                series: [{
+                    name: '[[#{desk.faceRecord}]]',
+                    type: 'bar', //柱状
+                    data: e1,
+                    itemStyle: {
+                        normal: { //柱子颜色
+                            color: '#ff6600'
+                        }
+                    },
+                }, {
+                    name: '[[#{desk.visitor}]]',
+                    type: 'bar',
+                    data: e3,
+                    itemStyle: {
+                        normal: {
+                            color: '#33ffcc'
+                        }
+                    }
+                },
+                    {
+                        name: '[[#{desk.hot}]]',
+                        type: 'bar',
+                        data: e2,
+                        itemStyle: {
+                            normal: {
+                                color: '#66ff00'
+                            }
+                        }
+                    }]
+            };
+
+
+            // 使用刚指定的配置项和数据显示图表。
+            chart1.setOption(optionchart);
+            var chart2 = echarts.init(document.getElementById("chart2"));
+            chart2.setOption(optionchart2);
+        });
+        $.get("/gate/loadAllGate", function (res) {
+            var data = res.data;
+            var dom = $("#gate_select");
+            var html = ' <option value="" >[[#{all}]]</option>';
+            $.each(data, function (index, item) {
+                html += '<option value="' + item.id + '">' + item.gateName + '</option>';
+            })
+            dom.html(html);
+            //重新渲染下拉列表
+            form.render("select");
+        });
+
+
+        var timeRange=1;
+
+        $("#b1").click(function () {
+            $("#b1").attr("style","background: #009688");
+            $("#b2").attr("style","background: grey");
+            $("#b3").attr("style","background: grey");
+            timeRange=1;
+            getHourData()
+        })
+
+        $("#b2").click(function () {
+            $("#b2").attr("style","background: #009688");
+            $("#b1").attr("style","background: grey");
+            $("#b3").attr("style","background: grey");
+            timeRange=7;
+            getHourData()
+        })
+
+        $("#b3").click(function () {
+            $("#b3").attr("style","background: #009688");
+            $("#b1").attr("style","background: grey");
+            $("#b2").attr("style","background: grey");
+            timeRange=30;
+            getHourData()
+        })
+
+        $("#gate_select").change(function () {
+            getHourData()
+        })
+
+
+        var hours=new Array(24);
+        function getHourData() {
+            var param = new Object();
+            param.timeRange = timeRange;
+            param.gateId = $("#gate_select").val();
+            $.post("/passRecord/selectHour", param, function (res) {
+                console.log(res)
+                hours=res
+
+
+                var hourArray=[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]
+
+                var optionchart3 = {
+                    title: {
+                        text: '[[#{desk.title1}]]'
+                    },
+                    legend: {
+                        data: ["[[#{desk.amount}]]"]
+                    },
+                    xAxis: {
+                        data: hourArray
+                    },
+                    yAxis: {
+                        type: 'value'
+                    },
+                    tooltip: {},
+                    series: [{
+                        name: '[[#{desk.amount}]]',
+                        type: 'bar', //柱状
+                        data: hours,
+                        itemStyle: {
+                            normal: { //柱子颜色
+                                color: '#ff6600'
+                            }
+                        }
+                    }]
+                };
+
+                var chart4 = echarts.init(document.getElementById("chart4"));
+
+                chart4.setOption(optionchart3);
+            })
+        }
+        getHourData()
+
+
+        function recordRank() {
+            var param = new Object();
+            param.start=start
+            param.end=end
+            $.post("/passRecord/loadRank", param, function (res) {
+                var dom = $("#rank");
+                var html = '';
+                $.each(res, function (index, item) {
+                    if(index>10){
+                        return;
+                    }
+                    html += '<div style="width: 100%">'+"<span class=layui-icon>&#xe629; </span>" +item.gateName+": "+item.records+ '</div>';
+                })
+                dom.html(html);
+            })
+        }
+        recordRank()
+
+
+
+
+    })
+
+</script>
+</body>
+</html>

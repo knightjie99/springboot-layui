@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wujie.springbootlayui.bus.mapper.BlackVisitorMapper">
+
+    <resultMap type="com.wujie.springbootlayui.bus.entity.BlackVisitor" id="balckListMap" autoMapping="true">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="allSql">
+        id , name ,belong_id, phone, person_group, connected_phone, id_num, visitor_photo,
+        creator_name,remark,create_time, update_time 
+    </sql>
+
+    <select id="getBlackVisitorByBelongId" resultMap="balckListMap">
+        select
+        <include refid="allSql"></include>
+        from face_server.bus_black_visitor
+        where belong_id = #{belongId}
+    </select>
+
+    <select id="getBlackVisitorById" resultMap="balckListMap">
+        select
+        <include refid="allSql"></include>
+        from face_server.bus_black_visitor
+        where id = #{id}
+    </select>
+
+    <select id="getBlackVisitorByIdNum" resultType="Integer">
+      select 1 from face_server.bus_black_visitor
+      where id_num = #{idNum}
+      and belong_id = #{belongId}
+    </select>
+
+    <delete id="deleteBlackVisitorByUid">
+        delete from bus_black_visitor where belong_id = #{belongId}
+    </delete>
+
+</mapper>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wujie.springbootlayui.bus.mapper.VipVisitorMapper">
+
+    <resultMap type="com.wujie.springbootlayui.bus.entity.VipVisitor" id="vipVisitorMap" autoMapping="true">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="allSql">
+        id , visitor_name , phone, visit_time,leave_time , gate_ids, belong_id,person_group,connected_phone,
+        cycle_date,id_num, visitor_photo, create_time, update_time,remark,creator_name
+    </sql>
+
+    <select id="getValidVipVisitors" resultMap="vipVisitorMap">
+        select
+        <include refid="allSql"></include>
+        from face_server.bus_vip_visitor
+        where belong_id = #{belongId}
+        and find_in_set(#{gateId},gate_ids)
+    </select>
+
+    <select id="getVipVisitorById" resultMap="vipVisitorMap">
+        select
+        <include refid="allSql"></include>
+        from face_server.bus_vip_visitor
+        where id = #{id}
+    </select>
+
+    <select id="getVipVisitorByIdNum" resultType = "Integer">
+        select
+            1
+        from face_server.bus_vip_visitor
+        where id_num = #{idNum} and
+              belong_id = #{belongId}
+    </select>
+
+    <delete id="deleteVipByUid">
+        delete from bus_vip_visitor where belong_id = #{belongId}
+    </delete>
+
+</mapper>

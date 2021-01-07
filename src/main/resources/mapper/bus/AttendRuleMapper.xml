@@ -1,0 +1,1 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"><mapper namespace="com.wujie.springbootlayui.bus.mapper.AttendRuleMapper">    <delete id="deleteAttendRuleByUid">        delete from bus_attend_rule where belong_id = #{belongId}    </delete></mapper>
