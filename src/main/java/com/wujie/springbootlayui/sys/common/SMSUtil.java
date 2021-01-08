@@ -66,13 +66,13 @@ public class SMSUtil {
 				break;
             case 3:
             	// 必填:短信签名-可在短信控制台中找到
-    			request.setSignName("沸石智能人脸识别系统"); // TODO 改这里
+    			request.setSignName("springbootLayui系统"); // TODO 改这里
             	request.setTemplateCode("SMS_206890046");
             	request.setTemplateParam("{\"name\":\"" + code + "\"}");
 				break;
             case 4:
             	// 必填:短信签名-可在短信控制台中找到
-    			request.setSignName("沸石智能人脸识别系统"); // TODO 改这里
+    			request.setSignName("springbootLayui系统"); // TODO 改这里
             	request.setTemplateCode("SMS_206890049");
             	request.setTemplateParam("{\"name\":\"" + code + "\"}");
 				break;
